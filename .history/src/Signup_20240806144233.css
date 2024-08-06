@@ -32,11 +32,8 @@
     background-color: #ffffff;
 }
 
-
-.logopic img{
-    width: 100%;
-    height: 100%;
-    object-fit:contain;
+.logopic{
+    width: 180px;
     margin-top: 50px;
 }
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './Home.css';
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
@@ -25,44 +24,34 @@ function Home() {
         const storedUsername = localStorage.getItem('username');
         if (storedUsername) {
             setUsername(storedUsername);
-            fetchTasks(storedUsername);
         }
+        const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        setTasks(storedTasks);
     }, []);
 
-    const fetchTasks = async (username) => {
-        try {
-            const response = await axios.get(`http://localhost:3001/tasks?username=${username}`);
-            setTasks(response.data);
-        } catch (error) {
-            console.error('There was an error fetching the tasks!', error);
-        }
-    };
+    useEffect(() => {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }, [tasks]);
 
     const handleButtonClick = () => {
         setShowFields(true);
     };
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = () => {
         if (taskText && taskDate && taskTime && taskPriority) {
             const newTask = {
                 text: taskText,
                 date: taskDate,
                 time: taskTime,
                 priority: taskPriority,
-                completed: false,
-                username: localStorage.getItem('username')
+                completed: false
             };
-            try {
-                const response = await axios.post('http://localhost:3001/tasks', newTask);
-                setTasks([...tasks, response.data]);
-                setTaskText('');
-                setTaskDate('');
-                setTaskTime('');
-                setTaskPriority('low');
-                setShowFields(false);
-            } catch (error) {
-                console.error('There was an error saving the task!', error);
-            }
+            setTasks([...tasks, newTask]);
+            setTaskText('');
+            setTaskDate('');
+            setTaskTime('');
+            setTaskPriority('low');
+            setShowFields(false);
         }
     };
 
@@ -89,27 +78,16 @@ function Home() {
         setTaskPriority(e.target.value);
     };
 
-    const handleCompleteClick = async (index) => {
+    const handleCompleteClick = (index) => {
         const task = tasks[index];
         const updatedTask = { ...task, completed: !task.completed };
-        try {
-            await axios.put(`http://localhost:3001/tasks/${task.id}`, updatedTask);
-            const newTasks = tasks.map((task, i) => i === index ? updatedTask : task);
-            setTasks(newTasks);
-        } catch (error) {
-            console.error('There was an error updating the task!', error);
-        }
+        const newTasks = tasks.map((task, i) => i === index ? updatedTask : task);
+        setTasks(newTasks);
     };
 
-    const handleDeleteClick = async (index) => {
-        const task = tasks[index];
-        try {
-            await axios.delete(`http://localhost:3001/tasks/${task.id}`);
-            const newTasks = tasks.filter((_, i) => i !== index);
-            setTasks(newTasks);
-        } catch (error) {
-            console.error('There was an error deleting the task!', error);
-        }
+    const handleDeleteClick = (index) => {
+        const newTasks = tasks.filter((_, i) => i !== index);
+        setTasks(newTasks);
     };
 
     const handleEditClick = (index) => {
@@ -146,6 +124,10 @@ function Home() {
                     <img src='todo-logo.png' alt='logo'></img>
                 </div>
                 <div className='profile'></div>
+                <div className='proname'>
+                    <h1>{username}</h1>
+                </div>
+                <div className='calen'></div>
                 <button className="hamburger" onClick={toggleDropdown}>
                     ☰
                 </button>
@@ -154,9 +136,6 @@ function Home() {
             {dropdownVisible && (
                 <div className='dropdown-menu'>
                     <div className='profile-dropdown'></div>
-                    <div className='proname'>
-                        <h1>{username}</h1>
-                    </div>
                     <div className='logout'>
                         <button className='logoutbtn' onClick={handleLogout}>Logout</button>
                     </div>

@@ -253,16 +253,6 @@ h1 {
         margin-top: 50px;
     }
 
-    .proname {
-        order: 3;
-        margin-top: 20px;
-    }
-
-    .logout {
-        order: 4;
-        margin-top: 20px;
-    }
-
     .content {
         display: flex;
         flex-direction: column;

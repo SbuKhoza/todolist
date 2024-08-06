@@ -26,7 +26,7 @@ function Home() {
         if (storedUsername) {
             setUsername(storedUsername);
             const storedTasks = getTasks(storedUsername);
-            setTasks(storedTasks);
+            setTasks(storedTasks ?? []);
         }
     }, []);
 
@@ -92,10 +92,10 @@ function Home() {
     const handleEditClick = (index) => {
         setEditingIndex(index);
         const task = tasks[index];
-        setTaskText(task.text);
-        setTaskDate(task.date);
-        setTaskTime(task.time);
-        setTaskPriority(task.priority);
+        setTaskText(task?.text ?? '');
+        setTaskDate(task?.date ?? '');
+        setTaskTime(task?.time ?? '');
+        setTaskPriority(task?.priority ?? 'low');
         setShowFields(true);
     };
 
@@ -113,7 +113,7 @@ function Home() {
     };
 
     const filteredTasks = tasks.filter(task => 
-        task.text.toLowerCase().includes(searchText.toLowerCase())
+        task.text?.toLowerCase().includes(searchText.toLowerCase())
     );
 
     return (

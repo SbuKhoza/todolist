@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { addTask, getTasks } from './sqlUtil';
 import './Home.css';
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
@@ -24,14 +25,10 @@ function Home() {
         const storedUsername = localStorage.getItem('username');
         if (storedUsername) {
             setUsername(storedUsername);
+            const storedTasks = getTasks(storedUsername);
+            setTasks(storedTasks);
         }
-        const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        setTasks(storedTasks);
     }, []);
-
-    useEffect(() => {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }, [tasks]);
 
     const handleButtonClick = () => {
         setShowFields(true);
@@ -40,12 +37,14 @@ function Home() {
     const handleSaveClick = () => {
         if (taskText && taskDate && taskTime && taskPriority) {
             const newTask = {
+                username,
                 text: taskText,
                 date: taskDate,
                 time: taskTime,
                 priority: taskPriority,
                 completed: false
             };
+            addTask(username, taskText, taskDate, taskTime, taskPriority, false);
             setTasks([...tasks, newTask]);
             setTaskText('');
             setTaskDate('');

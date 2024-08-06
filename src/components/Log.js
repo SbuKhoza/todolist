@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getUser } from './sqlUtil';
 import './Sign.css';
 
 function Login() {
@@ -9,8 +10,7 @@ function Login() {
 
     const handleLogin = (event) => {
         event.preventDefault();
-        const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-        const user = storedUsers.find(u => u.username === username && u.password === password);
+        const user = getUser(username, password);
 
         if (user) {
             localStorage.setItem('username', username);

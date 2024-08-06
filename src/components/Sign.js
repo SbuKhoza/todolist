@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { addUser } from './sqlUtil';
 import './Sign.css';
 
 function Signup() {
@@ -10,9 +11,7 @@ function Signup() {
 
     const handleSignup = (event) => {
         event.preventDefault();
-        const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-        storedUsers.push({ username, email, password });
-        localStorage.setItem('users', JSON.stringify(storedUsers));
+        addUser(username, email, password);
         localStorage.setItem('username', username);
         navigate('/home');
     };

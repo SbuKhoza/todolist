@@ -1,12 +1,14 @@
 const path = require('path');
 
 module.exports = {
-  // Other configurations...
   resolve: {
     fallback: {
-      "fs": require.resolve("browserify-fs"),
-      "path": require.resolve("path-browserify")
-    }
+      "fs": false,
+      "path": require.resolve("path-browserify"),
+      "stream": require.resolve("stream-browserify"),
+      "buffer": require.resolve("buffer/"),
+      "process": require.resolve("process/browser"),
+    },
   },
-  // Other configurations...
+ 
 };
